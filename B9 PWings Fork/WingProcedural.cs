@@ -62,7 +62,7 @@ namespace WingProcedural
             }
 
             debugTimeLast = DateTime.UtcNow;
-            Debug.Log(m);
+            Debug.Log("[B9PW] " +m);
         }
 
         private string DebugVectorToString(Vector3 v)
@@ -869,7 +869,7 @@ namespace WingProcedural
             }
             catch
             {
-                Debug.Log("B9 PWings - Failed to save settings");
+                Debug.Log("[B9PW] Failed to save settings");
             }
         }
 
@@ -972,9 +972,20 @@ namespace WingProcedural
             SetupMeshFilters();
             SetupMeshReferences();
             ReportOnMeshReferences();
-            UpdateMaterials();
+
+            if (ApplyLegacyTextures())
+            {
+
+                UpdateMaterials(); 
+            }
+
             UpdateGeometry(true);
             UpdateWindow();
+        }
+
+        private bool ApplyLegacyTextures()
+        {
+            return part.GetComponent("KSPTextureSwitch") is null;
         }
 
         #endregion Unity stuff and Callbacks/events
@@ -1808,9 +1819,8 @@ namespace WingProcedural
                 {
                     DebugLogWithID("CheckMeshFilter", "Looking for object: " + name);
                 }
-
                 Transform parent = part.transform.GetChild(0).GetChild(0).GetChild(0).Find(name);
-                
+
                 if (parent != null)
                 {
                     parent.localPosition = Vector3.zero;
@@ -1878,7 +1888,7 @@ namespace WingProcedural
                     }
                 }
                 else
-                    Debug.LogError(String.Format("Part [{0}] named [{1}] is a Control Surface but a ModuleControlSurface wasn't found on its module list!", this.part.ClassName, this.part.partName));
+                    Debug.LogError(String.Format("[B9PW] Part [{0}] named [{1}] is a Control Surface but a ModuleControlSurface wasn't found on its module list!", this.part.ClassName, this.part.partName));
             }
         }
 
